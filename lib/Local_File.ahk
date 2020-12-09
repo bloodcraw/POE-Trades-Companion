@@ -1,4 +1,4 @@
-﻿LocalSettings_VerifyEncoding() {
+LocalSettings_VerifyEncoding() {
 	global PROGRAM
 	iniFile := PROGRAM.INI_FILE
 
@@ -69,6 +69,8 @@ Get_LocalSettings_DefaultValues() {
 	settings.SETTINGS_MAIN.ItemGridHideNormalTab										:= "False"
 	settings.SETTINGS_MAIN.ItemGridHideQuadTab											:= "False"
 	settings.SETTINGS_MAIN.ItemGridHideNormalTabAndQuadTabForMaps						:= "False"
+	settings.SETTINGS_MAIN.ItemGridStashFolder											:= "False"
+	settings.SETTINGS_MAIN.ItemGridFolderLevel											:= "False"
 	settings.SETTINGS_MAIN.DisableBuyInterface											:= "False"
 
 
@@ -314,7 +316,7 @@ LocalSettings_IsValueValid(iniSect, iniKey, iniValue) {
 			isValueValid := True
 		else if (iniKey = "MinimizeInterfaceToBottomLeft")
 			isValueValid := IsIn(iniValue, "True,False") ? True : False	
-		else if IsIn(iniKey, "ItemGridHideNormalTab,ItemGridHideQuadTab,ItemGridHideNormalTabAndQuadTabForMaps,ShowItemGridWithoutInvite")
+		else if IsIn(iniKey, "ItemGridHideNormalTab,ItemGridHideQuadTab,ItemGridHideNormalTabAndQuadTabForMaps,ShowItemGridWithoutInvite,ItemGridStashFolder,ItemGridFolderLevel")
 			isValueValid := IsIn(iniValue, "True,False") ? True : False	
 		else if (iniKey = "DisableBuyInterface")
 			isValueValid := IsIn(iniValue, "True,False") ? True : False	
