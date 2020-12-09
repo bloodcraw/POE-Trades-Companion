@@ -1,4 +1,4 @@
-﻿/*
+/*
 #Include H:\UserLibrary\Documents\GitHub\POE-Trades-Companion\lib\Class_Gui.ahk
 #Include H:\UserLibrary\Documents\GitHub\POE-Trades-Companion\lib\EasyFuncs.ahk
 #SingleInstance, Force
@@ -23,8 +23,8 @@ class GUI_ItemGrid {
     tab_xRoot           17 / 1080 = 0.01666666666666666666666666666667
     tab_yRoot           162 / 1080 = 0.15
 
-    A square is 54x54
-    tab_squareWRoot     54 / 1080 = 0.05
+    Squares are not equal! The whole grid is 632x632 which is 52+2/3 pixel per square
+    tab_squareWRoot     52.6666 / 1080 = 0.0487
     
     To know where the grid starts for a specific resolution, we do (tab_xRoot * resH)
     Example. On a resolution of 800x600:
@@ -61,16 +61,18 @@ class GUI_ItemGrid {
 */
     ; position of tab grid
     static tab_xRoot := 17/1080
-	static tab_yRoot := 162/1080
+    static tab_yRoot := 127/1080
+    static offset_outsideFolder := 7/1080
+    static offset_insideFolder := 41/1080
     ; size of normal tab squares
-    static tab_squareWRoot := 53/1080
-    static tab_squareHRoot := 53/1080
+    static tab_squareWRoot := 632/12/1080
+    static tab_squareHRoot := 632/12/1080
     static tab_casesCountX := 12
     static tab_casesCountY := 12
 
     ; size of quad tab squares
-    static quad_squareWRoot := 53/1080/2
-    static quad_squareHRoot := 53/1080/2
+    static quad_squareWRoot := 632/24/1080
+    static quad_squareHRoot := 632/24/1080
     static quad_casesCountX := 24
     static quad_casesCountY := 24
 
@@ -79,14 +81,14 @@ class GUI_ItemGrid {
 
     ; map tab grid position and size of squares
     static map_xRoot := 45/1080
-    static map_yRoot := 501/1080
-    static map_squareWRoot := 48/1080
-    static map_squareHRoot := 48/1080
+    static map_yRoot := 465/1080
+    static map_squareWRoot := 575/12/1080
+    static map_squareHRoot := 288/6/1080
     static map_casesCountX := 12
     static map_casesCountY := 6
     ; map tab tier button positions and size
-    static mapTier_xpos := {1:44, 2:110, 3:176, 4:242, 5:308, 6:375, 7:441, 8:507, 9:573 , 10:82, 11:148, 12:215,13: 281, 14:347, 15:413, 16:479 , unique:545}
-    static mapTier_ypos := {1:197, 2:197, 3:197, 4:197, 5:197, 6:197, 7:197, 8:197, 9:197 , 10:264, 11:264, 12:264,13: 264, 14:264, 15:264, 16:264 , unique:264}
+    static mapTier_xpos := {1:44, 2:110, 3:176, 4:242, 5:308, 6:375, 7:441, 8:507, 9:573 , 10:82, 11:148, 12:215, 13: 281, 14:347, 15:413, 16:479 , unique:545}
+    static mapTier_ypos := {1:162, 2:162, 3:162, 4:162, 5:162, 6:162, 7:162, 8:162, 9:162 , 10:230, 11:230, 12:230, 13: 230, 14:230, 15:230, 16:230 , unique:230}
     static mapTier_squareWRoot := 45/1080
     static mapTier_squareHRoot := 45/1080
     ; map map button positions and size
@@ -121,6 +123,8 @@ class GUI_ItemGrid {
         hideNormalTab := PROGRAM.SETTINGS.SETTINGS_MAIN.ItemGridHideNormalTab
         hideQuadTab := PROGRAM.SETTINGS.SETTINGS_MAIN.ItemGridHideQuadTab
         hideNormalAndQuadTabsForMaps := PROGRAM.SETTINGS.SETTINGS_MAIN.ItemGridHideNormalTabAndQuadTabForMaps
+        stashFolder := PROGRAM.SETTINGS.SETTINGS_MAIN.ItemGridStashFolder
+        folderLevel := PROGRAM.SETTINGS.SETTINGS_MAIN.ItemGridFolderLevel
 
         resDPI := Get_DpiFactor()
         winH := winH / resDPI ; os dpi fix
@@ -141,8 +145,21 @@ class GUI_ItemGrid {
         winBorderSide := winBorderSide / resDPI
         winBorderTop := winBorderTop / resDPI
 
-        xStart := this.tab_xRoot * winH, yStart := this.tab_yRoot * winH ; Calc first case x/y start pos
-        map_xStart := this.map_xRoot * winH, map_yStart := this.map_yRoot * winH 
+        if (stashFolder = "True") {
+            if (folderLevel = "True") {
+                xStart := this.tab_xRoot * winH, yStart := ( this.tab_yRoot + this.offset_outsideFolder ) * winH ; Calc first case x/y start pos
+                map_xStart := this.map_xRoot * winH, map_yStart := ( this.map_yRoot + this.offset_outsideFolder ) * winH 
+            }
+            else {
+                xStart := this.tab_xRoot * winH, yStart := ( this.tab_yRoot_insideFolder + this.offset_insideFolder ) * winH ; Calc first case x/y start pos
+                map_xStart := this.map_xRoot * winH, map_yStart := ( this.map_yRoot + this.offset_insideFolder ) * winH 
+            }
+        }
+        else {
+            xStart := this.tab_xRoot * winH, yStart := this.tab_yRoot * winH ; Calc first case x/y start pos
+            map_xStart := this.map_xRoot * winH, map_yStart := this.map_yRoot * winH 
+        }
+        yStartItemName := this.tab_yRoot * winH
         gridItemX--, gridItemY-- ; Minus one, so we can get correct case multiplier
 
         GUI_ItemGrid.Destroy()
@@ -203,8 +220,8 @@ class GUI_ItemGrid {
         fontColor := "000000", backgroundColor := "B9B9B9", borderColor := "000000"
 
         stashTabHeight := this.stashTabHeightRoot*winH
-        ; itemNameX := xStart, itemNameY := yStart + (this.tab_casesCountY * caseH) + 5 ; Position: Under all cases
-        itemNameX := xStart, itemNameY := yStart - (this.stashTabHeightRoot*winH) - (itemName_guiH*2) - 5 +1 ; Position: Above tabname gui
+        ; itemNameX := xStart, itemNameY := yStartItemName + (this.tab_casesCountY * caseH) + 5 ; Position: Under all cases
+        itemNameX := xStart, itemNameY := yStartItemName - (this.stashTabHeightRoot*winH) - (itemName_guiH*2) - 5 +1 ; Position: Above tabname gui
         itemNameX += winBorderSide, itemNameY += winBorderTop ; Add window border
         itemNameXRelative := itemNameX + winX, itemNameYRelative := itemNameY + winY ; Relative to win pos
        
@@ -224,8 +241,8 @@ class GUI_ItemGrid {
         fontColor := "000000", backgroundColor := "B9B9B9", borderColor := "000000"
 
         stashTabHeight := this.stashTabHeightRoot*winH
-        ; stashTabNameX := xStart, stashTabNameY := yStart + (this.tab_casesCountY * caseH) + 5 ; Position: Under all cases
-        stashTabNameX := xStart, stashTabNameY := yStart - (this.stashTabHeightRoot*winH) - tabName_guiH - 5 ; Position: Above tabs
+        ; stashTabNameX := xStart, stashTabNameY := yStartItemName + (this.tab_casesCountY * caseH) + 5 ; Position: Under all cases
+        stashTabNameX := xStart, stashTabNameY := yStartItemName - (this.stashTabHeightRoot*winH) - tabName_guiH - 5 ; Position: Above tabs
         stashTabNameX += winBorderSide, stashTabNameY += winBorderTop ; Add window border
         stashTabNameXRelative := stashTabNameX + winX, stashTabNameYRelative := stashTabNameY + winY ; Relative to win pos
        
@@ -258,7 +275,17 @@ class GUI_ItemGrid {
 
             ; Map tier case
             mapTier_caseW := this.mapTier_squareWRoot * winH, mapTier_caseH := this.mapTier_squareHRoot * winH ; Calc case w/h
-            mapTier_stashX := this.mapTier_xpos[mapTier]/1080 * winH, mapTier_stashY := this.mapTier_ypos[mapTier]/1080 * winH ; /1080 to get root
+            if (stashFolder = "True") {
+                if (folderLevel = "True") {
+                    mapTier_stashX := this.mapTier_xpos[mapTier]/1080 * winH, mapTier_stashY := (this.mapTier_ypos[mapTier]/1080 + this.offset_outsideFolder ) * winH ; /1080 to get root
+                }
+                else {
+                    mapTier_stashX := this.mapTier_xpos[mapTier]/1080 * winH, mapTier_stashY := (this.mapTier_ypos[mapTier]/1080 + this.offset_insideFolder ) * winH ; /1080 to get root
+                }
+            }
+            else {
+                mapTier_stashX := this.mapTier_xpos[mapTier]/1080 * winH, mapTier_stashY := this.mapTier_ypos[mapTier]/1080 * winH ; /1080 to get root
+            }
             mapTier_stashXRelative := mapTier_stashX + winX, mapTier_stashYRelative := mapTier_stashY + winY ; Relative to win pos
             mapTier_stashXRelative += winBorderSide, mapTier_stashYRelative += winBorderTop ; Add win border
             mapTier_pointW := mapTier_caseW, mapTier_pointH := mapTier_caseH ; Make a square same size as stash square
