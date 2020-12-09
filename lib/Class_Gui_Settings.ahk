@@ -368,13 +368,15 @@ Class GUI_Settings {
 		Gui.Add("Settings", "Checkbox", "x" secondRowX " y+10 hwndhCB_ItemGridHideNormalTab", "Hide normal tab location?")
 		Gui.Add("Settings", "Checkbox", "xp y+5 hwndhCB_ItemGridHideQuadTab", "Hide quad tab location?")
 		Gui.Add("Settings", "Checkbox", "xp y+5 hwndhCB_ItemGridHideNormalTabAndQuadTabForMaps", "Hide normal and quad locations, for maps?")
+		Gui.Add("Settings", "Checkbox", "xp y+5 hwndhCB_ItemGridStashFolder", "Use stash folders?")
+		Gui.Add("Settings", "Checkbox", "x+10 yp hwndhCB_ItemGridFolderLevel", "Tab on folder level?")
 		
 		; * * Subroutines + User settings
 		GuiSettings.TabSettingsMain_Controls := "hCB_HideInterfaceWhenOutOfGame,hCB_MinimizeInterfaceToBottomLeft,hCB_CopyItemInfosOnTabChange,hCB_AutoFocusNewTabs,hCB_AutoMinimizeOnAllTabsClosed,hCB_AutoMaximizeOnFirstNewTab,hCB_SendTradingWhisperUponCopyWhenHoldingCTRL"
 		. ",hCB_TradingWhisperSFXToggle,hEDIT_TradingWhisperSFXPath,hBTN_BrowseTradingWhisperSFX,hCB_RegularWhisperSFXToggle,hEDIT_RegularWhisperSFXPath,hBTN_BrowseRegularWhisperSFX"
 		. ",hCB_BuyerJoinedAreaSFXToggle,hEDIT_BuyerJoinedAreaSFXPath,hBTN_BrowseBuyerJoinedAreaSFX"
 		. ",hSLIDER_NoTabsTransparency,hSLIDER_TabsOpenTransparency,hCB_AllowClicksToPassThroughWhileInactive,hCB_ShowTabbedTrayNotificationOnWhisper"
-		. ",hCB_ItemGridHideNormalTab,hCB_ItemGridHideQuadTab,hCB_ItemGridHideNormalTabAndQuadTabForMaps,hCB_ShowItemGridWithoutInvite"
+		. ",hCB_ItemGridHideNormalTab,hCB_ItemGridHideQuadTab,hCB_ItemGridHideNormalTabAndQuadTabForMaps,hCB_ShowItemGridWithoutInvite,hCB_ItemGridStashFolder,hCB_ItemGridFolderLevel"
 		; . ",hDDL_SendMsgMode,hTXT_SendMessagesModeTip"
 		. ",hEDIT_PushBulletToken,hCB_PushBulletOnTradingWhisper,hCB_PushBulletOnPartyMessage,hCB_PushBulletOnWhisperMessage,hCB_PushBulletOnlyWhenAfk"
 		. ",hEDIT_PoeAccounts"
@@ -970,7 +972,7 @@ Class GUI_Settings {
 		. ",hCB_AutoMinimizeOnAllTabsClosed,hCB_AutoMaximizeOnFirstNewTab,hCB_TradingWhisperSFXToggle,hCB_BuyerJoinedAreaSFXToggle"
 		. ",hCB_RegularWhisperSFXToggle,hCB_AllowClicksToPassThroughWhileInactive,hCB_ShowTabbedTrayNotificationOnWhisper,hCB_SendTradingWhisperUponCopyWhenHoldingCTRL"
 		. ",hCB_PushBulletOnTradingWhisper,hCB_PushBulletOnPartyMessage,hCB_PushBulletOnWhisperMessage,hCB_PushBulletOnlyWhenAfk"
-		. ",hCB_ItemGridHideNormalTab,hCB_ItemGridHideQuadTab,hCB_ItemGridHideNormalTabAndQuadTabForMaps,hCB_ShowItemGridWithoutInvite")
+		. ",hCB_ItemGridHideNormalTab,hCB_ItemGridHideQuadTab,hCB_ItemGridHideNormalTabAndQuadTabForMaps,hCB_ShowItemGridWithoutInvite,hCB_ItemGridStashFolder,hCB_ItemGridFolderLevel")
 			iniKey := SubStr(CtrlName, 5)
 
 		if !(iniKey) {
@@ -1113,6 +1115,8 @@ Class GUI_Settings {
 		GuiControl, Settings:,% GuiSettings_Controls.hCB_ItemGridHideNormalTab,% thisTabSettings.ItemGridHideNormalTab
 		GuiControl, Settings:,% GuiSettings_Controls.hCB_ItemGridHideQuadTab,% thisTabSettings.ItemGridHideQuadTab
 		GuiControl, Settings:,% GuiSettings_Controls.hCB_ItemGridHideNormalTabAndQuadTabForMaps,% thisTabSettings.ItemGridHideNormalTabAndQuadTabForMaps
+		GuiControl, Settings:,% GuiSettings_Controls.hCB_ItemGridStashFolder,% thisTabSettings.ItemGridStashFolder
+		GuiControl, Settings:,% GuiSettings_Controls.hCB_ItemGridFolderLevel,% thisTabSettings.ItemGridFolderLevel
 	}
 
 	TabSettingsMain_OnSendMsgModeChange() {
